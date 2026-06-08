@@ -1,0 +1,41 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "NavigatorConfig",
+    "description": "自定义导航页/书签配置文件规范",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "Schema 文件的路径"
+        }
+    },
+    "additionalProperties": {
+        "type": "array",
+        "description": "分类下的网站列表",
+        "items": {
+            "type": "object",
+            "description": "网站卡片信息",
+            "required": [
+                "text",
+                "url"
+            ],
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "网站显示的名称/标题",
+                    "minLength": 1
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "网站的完整 URL 地址（需包含 http:// 或 https://）"
+                },
+                "color": {
+                    "type": "string",
+                    "pattern": "^(#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}))?$",
+                    "description": "卡片的背景或文字主题颜色（十六进制颜色码，如 #3498DB，可为空字符串）"
+                }
+            }
+        }
+    }
+}

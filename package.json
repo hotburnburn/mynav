@@ -1,0 +1,23 @@
+{
+  "name": "mynav",
+  "version": "1.0.0",
+  "description": "",
+  "main": "nav2.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hotburnburn/mynav.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hotburnburn/mynav/issues"
+  },
+  "homepage": "https://github.com/hotburnburn/mynav#readme",
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  }
+}

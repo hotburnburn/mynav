@@ -1,0 +1,39 @@
+{
+  "$schema": "./link_schema.json",
+  "搜索引擎": [
+    {
+      "text": "Google",
+      "url": "https://www.google.com",
+      "color": "#4285F4"
+    },
+    {
+      "text": "Bing",
+      "url": "https://www.bing.com",
+      "color": "#00897B"
+    }
+  ],
+  "常用工具": [
+    {
+      "text": "GitHub",
+      "url": "https://github.com",
+      "color": "#333333"
+    },
+    {
+      "text": "Stack Overflow",
+      "url": "https://stackoverflow.com",
+      "color": "#F48024"
+    }
+  ],
+  "影音娱乐": [
+    {
+      "text": "YouTube",
+      "url": "https://www.youtube.com",
+      "color": "#FF0000"
+    },
+    {
+      "text": "Bilibili",
+      "url": "https://www.bilibili.com",
+      "color": "#00A1D6"
+    }
+  ]
+}

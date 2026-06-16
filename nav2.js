@@ -112,10 +112,43 @@ function setupExportButton() {
     });
 }
 
-async function renderNav() {
+function renderData(data, container) {
+    container.innerHTML = ""; // 清空之前的内容
+    for (const [categoryName, links] of Object.entries(data)) {
+        if (categoryName === "$schema") continue;
+
+        const categoryColumn = createCategoryColumn(categoryName, links);
+        container.appendChild(categoryColumn);
+    }
+}
+
+async function initNav() {
     document.body.style.background = "#242424";
     const container = CreateContainer();
+    
+    // 默认加载 demo.json
+    try {
+        const response = await fetch("demo.json");
+        if (response.ok) {
+            const data = await response.json();
+            renderData(data, container);
+        } else {
+            console.warn("无法加载 demo.json");
+        }
+    } catch (err) {
+        console.error("加载 Demo 数据失败:", err);
+    }
 
+    setupExportButton();
+
+    // 绑定解锁私密链接按钮
+    const unlockBtn = document.getElementById("unlockBtn");
+    if (unlockBtn) {
+        unlockBtn.addEventListener("click", () => loadEncrypted(container));
+    }
+}
+
+async function loadEncrypted(container) {
     // 1. 请求加密后的密文文件
     let response;
     try {
@@ -136,8 +169,7 @@ async function renderNav() {
         if (!password) {
             password = prompt("请输入导航页解密密码 🔐：");
             if (password === null) {
-                alert("拒绝输入密码，无法加载导航。");
-                return;
+                return; // 取消输入，保持当前页面原样
             }
         }
 
@@ -146,7 +178,7 @@ async function renderNav() {
             const bytes = CryptoJS.AES.decrypt(encryptedData, password);
             decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
 
-            if (!decryptedStr) throw new Error("密码错误"); // 如果解密出来是空字符串，说明密码错了
+            if (!decryptedStr) throw new Error("密码错误");
 
             data = JSON.parse(decryptedStr); // 尝试解析为 JSON
 
@@ -160,16 +192,9 @@ async function renderNav() {
         }
     }
 
-    // 3. 渲染逻辑（保持你原本的逻辑不变）
-    for (const [categoryName, links] of Object.entries(data)) {
-        if (categoryName === "$schema") continue;
-
-        const categoryColumn = createCategoryColumn(categoryName, links);
-        container.appendChild(categoryColumn);
-    }
-
-    setupExportButton();
+    // 3. 渲染私密数据
+    renderData(data, container);
 }
 
 // execute here ----------------------
-renderNav();
+initNav();

@@ -126,29 +126,56 @@ async function initNav() {
     document.body.style.background = "#242424";
     const container = CreateContainer();
     
-    // 默认加载 demo.json
-    try {
-        const response = await fetch("demo.json");
-        if (response.ok) {
-            const data = await response.json();
-            renderData(data, container);
-        } else {
-            console.warn("无法加载 demo.json");
+    let isEncryptedLoaded = false;
+    const savedPassword = localStorage.getItem("nav_password");
+    const unlockBtn = document.getElementById("unlockBtn");
+
+    // 如果之前保存过密码，尝试直接自动解密并加载
+    if (savedPassword) {
+        try {
+            const response = await fetch("links.enc");
+            if (response.ok) {
+                const encryptedData = await response.text();
+                const bytes = CryptoJS.AES.decrypt(encryptedData, savedPassword);
+                const decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
+                if (decryptedStr) {
+                    const data = JSON.parse(decryptedStr);
+                    renderData(data, container);
+                    isEncryptedLoaded = true;
+                    // 加载成功后隐藏解锁按钮
+                    if (unlockBtn) unlockBtn.style.display = "none";
+                }
+            }
+        } catch (e) {
+            console.warn("自动解密失败，密码可能已过期或错误");
+            localStorage.removeItem("nav_password");
         }
-    } catch (err) {
-        console.error("加载 Demo 数据失败:", err);
+    }
+
+    // 如果没有密码或者解密失败，则加载默认的 demo.json
+    if (!isEncryptedLoaded) {
+        try {
+            const response = await fetch("demo.json");
+            if (response.ok) {
+                const data = await response.json();
+                renderData(data, container);
+            } else {
+                console.warn("无法加载 demo.json");
+            }
+        } catch (err) {
+            console.error("加载 Demo 数据失败:", err);
+        }
     }
 
     setupExportButton();
 
-    // 绑定解锁私密链接按钮
-    const unlockBtn = document.getElementById("unlockBtn");
-    if (unlockBtn) {
-        unlockBtn.addEventListener("click", () => loadEncrypted(container));
+    // 只有在没加载私密链接的情况下，才绑定解锁按钮事件
+    if (unlockBtn && !isEncryptedLoaded) {
+        unlockBtn.addEventListener("click", () => loadEncrypted(container, unlockBtn));
     }
 }
 
-async function loadEncrypted(container) {
+async function loadEncrypted(container, unlockBtn) {
     // 1. 请求加密后的密文文件
     let response;
     try {
@@ -192,8 +219,11 @@ async function loadEncrypted(container) {
         }
     }
 
-    // 3. 渲染私密数据
+    // 3. 渲染私密数据并隐藏解锁按钮
     renderData(data, container);
+    if (unlockBtn) {
+        unlockBtn.style.display = "none";
+    }
 }
 
 // execute here ----------------------

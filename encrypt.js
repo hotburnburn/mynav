@@ -1,11 +1,6 @@
 const fs = require('fs');
 const CryptoJS = require('crypto-js');
-const readline = require('readline');
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const { getPassword } = require('./password');
 
 const jsonFilePath = './links3.json';
 const encFilePath = './links.enc';
@@ -32,11 +27,11 @@ try {
     console.warn('⚠️ 警告: links3.json 似乎不是一个合法的 JSON 格式。将继续加密...');
 }
 
-// 隐藏输入字符的实现有点复杂，这里简单使用标准输入输出
-rl.question('请输入加密密码 🔐: ', (password) => {
+async function encrypt() {
+    const password = await getPassword('请输入加密密码 🔐: ');
+
     if (!password) {
         console.error('❌ 密码不能为空');
-        rl.close();
         process.exit(1);
     }
 
@@ -51,7 +46,11 @@ rl.question('请输入加密密码 🔐: ', (password) => {
         console.log('你现在可以将修改后的 links.enc 提交到 GitHub 仓库了。');
     } catch (err) {
         console.error('❌ 加密失败:', err.message);
+        process.exitCode = 1;
     }
-    
-    rl.close();
+}
+
+encrypt().catch((err) => {
+    console.error('❌ 读取密码失败:', err.message);
+    process.exit(1);
 });

@@ -42,13 +42,25 @@ npm install
 
 ### 3. 加密数据
 
-在终端运行以下命令，将明文的 `links3.json` 加密成前端需要的 `links.enc`：
+复制环境变量示例文件并填写密码（`.env` 已加入 `.gitignore`，不会被 Git 跟踪）：
+
+```bash
+cp .env.example .env
+```
+
+```dotenv
+LINKS_PASSWORD=你的密码
+```
+
+然后运行以下命令，将明文的 `links3.json` 加密成前端需要的 `links.enc`：
 
 ```bash
 node encrypt.js
 ```
 
-根据提示输入你的密码。请牢记这个密码，这是你在网页端解密查看私密链接的唯一凭证。
+脚本会优先读取 `.env` 中的 `LINKS_PASSWORD`，因此以后修改链接后可以直接重新运行。未配置该变量时，脚本仍会提示你输入密码。`node decrypt-links.js` 也使用相同配置。
+
+请牢记这个密码，这是你在网页端解密查看私密链接的唯一凭证。不要提交 `.env`，也不要把真实密码写进 `.env.example`。
 
 > ⚠️ **注意**：`.gitignore` 中已经忽略了 `links3.json`，请确保不要手动把含有私密数据的明文 JSON 推送到公开仓库中！
 

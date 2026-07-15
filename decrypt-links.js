@@ -1,6 +1,6 @@
 const fs = require('fs');
 const CryptoJS = require('crypto-js');
-const readline = require('readline');
+const { getPassword } = require('./password');
 
 const encFilePath = './links.enc';
 const jsonFilePath = './links3.json';
@@ -19,11 +19,6 @@ try {
     console.error('❌ 读取加密文件时出错:', err.message);
     process.exit(1);
 }
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
 function tryDecrypt(password) {
     try {
@@ -50,10 +45,11 @@ function tryDecrypt(password) {
 
 console.log('🔓 正在解密 links.enc ...\n');
 
-rl.question('请输入解密密码 🔐: ', (password) => {
+async function decrypt() {
+    const password = await getPassword('请输入解密密码 🔐: ');
+
     if (!password) {
         console.error('❌ 密码不能为空');
-        rl.close();
         process.exit(1);
     }
 
@@ -61,7 +57,6 @@ rl.question('请输入解密密码 🔐: ', (password) => {
 
     if (!result.success) {
         console.error(`❌ ${result.error}`);
-        rl.close();
         process.exit(1);
     }
 
@@ -82,7 +77,11 @@ rl.question('请输入解密密码 🔐: ', (password) => {
         console.log(`📊 共 ${categoryCount} 个分类, ${totalLinks} 个链接`);
     } catch (err) {
         console.error('❌ 写入文件失败:', err.message);
+        process.exitCode = 1;
     }
+}
 
-    rl.close();
+decrypt().catch((err) => {
+    console.error('❌ 读取密码失败:', err.message);
+    process.exit(1);
 });

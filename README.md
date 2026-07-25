@@ -74,6 +74,28 @@ node encrypt.js
 - 按下 `f`，即可呼出字母快捷键，配合肌肉记忆可以做到打开新标签页后一秒内直达常用网站。
 - 对于高频使用的公开网站，建议写入 `demo.json` 避免每次输入密码；对于内部项目和个人隐私书签，写入 `links3.json` 加密使用。
 
+## 🧩 可视化编辑器
+
+日常导航页仍然只读取静态的 `links.enc`，不会加载任何编辑功能。需要整理链接时，在项目目录运行：
+
+```bash
+npm run editor
+```
+
+然后打开 `http://127.0.0.1:8765/`：
+
+1. Node 服务会自动读取 `.env` 中的 `LINKS_PASSWORD`，并在本机解密 `links.enc`。
+2. 拖动分类或链接即可排序；链接也可以拖到其他分类。
+3. 可以直接添加、编辑、删除链接和分类。
+4. 点击“保存更改”或按 `Ctrl/Command + S`，服务会备份旧密文、重新加密并原子写回 `links.enc`。
+5. 点击“发布到 GitHub”，输入 Commit message 后，编辑服务会依次执行 `git add -- links.enc`、`git commit` 和当前分支的 `git push`。
+
+编辑服务只监听 `127.0.0.1`，不会暴露到局域网，也不会把密码发送给浏览器。最近 20 份加密备份保存在被 Git 忽略的 `.mynav-backups/`。编辑器与命令行脚本使用完全相同的 AES 数据格式，可以混合使用。
+
+发布功能直接复用本机仓库的当前分支、上游配置和 SSH 凭据，不在项目中保存 GitHub Token。发布提交固定只包含 `links.enc`，不会顺带提交工作区中的其他修改。如果 commit 或 push 失败，错误会原样返回到编辑器；若 commit 成功而 push 失败，本地提交会保留，可以修复网络或 SSH 问题后在终端执行 `git push`。
+
+GitHub Pages 通过 `_config.yml` 排除本机编辑器、Node 服务、命令行脚本和项目说明，只发布导航页运行所需的静态资源。本机编辑功能不会进入 Pages 产物，也不会增加日常导航页的网络请求。
+
 ## 📜 开源协议
 
 本项目采用 **WTFPL** (DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE) 协议。

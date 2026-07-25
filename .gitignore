@@ -1,3 +1,5 @@
 links3.json
 node_modules/
 .env
+.mynav-backups/
+.links-*.tmp

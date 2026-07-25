@@ -1,0 +1,13 @@
+exclude:
+  - README.md
+  - LICENSE
+  - package.json
+  - package-lock.json
+  - password.js
+  - encrypt.js
+  - decrypt-links.js
+  - server.js
+  - editor.html
+  - editor.css
+  - editor.js
+  - .env.example

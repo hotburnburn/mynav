@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>MyNav 编辑器</title>
+    <link rel="stylesheet" href="editor.css" />
+</head>
+
+<body>
+    <main class="app-shell">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">MYNAV / EDITOR</p>
+                <h1>整理你的导航</h1>
+                <p class="subtitle">拖动排序，随手增删。保存时由本机服务自动加密写回。</p>
+            </div>
+            <div class="topbar-actions">
+                <span id="saveStatus" class="save-status" data-state="idle">正在连接本机服务</span>
+                <button id="reloadBtn" class="button button-quiet" type="button" disabled>重新载入</button>
+                <button id="saveBtn" class="button button-quiet" type="button" disabled>保存更改</button>
+                <button id="publishBtn" class="button button-primary" type="button" disabled>发布到 GitHub</button>
+            </div>
+        </header>
+
+        <section id="loadingView" class="unlock-view">
+            <div class="unlock-card">
+                <div class="lock-mark" aria-hidden="true">↗</div>
+                <p class="eyebrow">LOCAL EDITOR SERVICE</p>
+                <h2 id="loadingTitle">正在读取 links.enc</h2>
+                <p id="loadingMessage" class="unlock-copy">密码由本机 Node 服务从 <code>.env</code> 读取，不会发送给浏览器。</p>
+                <button id="retryBtn" class="button button-primary button-wide" type="button" hidden>重试连接</button>
+            </div>
+        </section>
+
+        <section id="editorView" class="editor-view" hidden>
+            <div class="editor-toolbar">
+                <div class="stats">
+                    <strong id="categoryCount">0</strong> 个分类
+                    <span class="dot">·</span>
+                    <strong id="linkCount">0</strong> 个链接
+                </div>
+                <div class="toolbar-actions">
+                    <button id="addCategoryBtn" class="button button-primary" type="button">＋ 添加分类</button>
+                </div>
+            </div>
+            <div id="categoryBoard" class="category-board" aria-live="polite"></div>
+            <div id="emptyState" class="empty-state" hidden>
+                <p>还没有分类。</p>
+                <button id="emptyAddCategoryBtn" class="button button-primary" type="button">添加第一个分类</button>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="linkDialog" class="dialog">
+        <form id="linkForm" method="dialog">
+            <div class="dialog-heading">
+                <div>
+                    <p class="eyebrow">LINK</p>
+                    <h2 id="linkDialogTitle">添加链接</h2>
+                </div>
+                <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+            </div>
+            <input id="linkCategoryIndex" type="hidden" />
+            <input id="linkIndex" type="hidden" />
+            <label for="linkTextInput">名称</label>
+            <input id="linkTextInput" type="text" maxlength="60" placeholder="例如：GitHub" required />
+            <label for="linkUrlInput">网址</label>
+            <input id="linkUrlInput" type="url" placeholder="https://example.com" required />
+            <label for="linkColorInput">按钮颜色</label>
+            <div class="color-row">
+                <input id="linkColorInput" type="color" value="#409eff" />
+                <input id="linkColorTextInput" type="text" value="#409eff" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$"
+                    aria-label="十六进制颜色" required />
+            </div>
+            <p id="linkFormError" class="form-error" role="alert"></p>
+            <div class="dialog-actions">
+                <button class="button button-quiet" value="cancel" type="submit">取消</button>
+                <button id="linkSubmitBtn" class="button button-primary" value="default" type="submit">保存链接</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="categoryDialog" class="dialog dialog-small">
+        <form id="categoryForm" method="dialog">
+            <div class="dialog-heading">
+                <div>
+                    <p class="eyebrow">CATEGORY</p>
+                    <h2 id="categoryDialogTitle">添加分类</h2>
+                </div>
+                <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+            </div>
+            <input id="categoryIndex" type="hidden" />
+            <label for="categoryNameInput">分类名称</label>
+            <input id="categoryNameInput" type="text" maxlength="40" placeholder="例如：常用工具" required />
+            <p id="categoryFormError" class="form-error" role="alert"></p>
+            <div class="dialog-actions">
+                <button class="button button-quiet" value="cancel" type="submit">取消</button>
+                <button class="button button-primary" value="default" type="submit">保存分类</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="publishDialog" class="dialog dialog-small">
+        <form id="publishForm" method="dialog">
+            <div class="dialog-heading">
+                <div>
+                    <p class="eyebrow">GIT PUBLISH</p>
+                    <h2>发布到 GitHub</h2>
+                </div>
+                <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+            </div>
+            <p class="dialog-copy">将保存当前修改，然后只提交 <code>links.enc</code> 并推送当前分支。</p>
+            <label for="commitMessageInput">Commit message</label>
+            <input id="commitMessageInput" type="text" maxlength="200" value="更新导航链接" required />
+            <p id="publishFormError" class="form-error" role="alert"></p>
+            <div class="dialog-actions">
+                <button class="button button-quiet" value="cancel" type="submit">取消</button>
+                <button id="confirmPublishBtn" class="button button-primary" value="default"
+                    type="submit">保存并发布</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="editor.js"></script>
+</body>
+
+</html>

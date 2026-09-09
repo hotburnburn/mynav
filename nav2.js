@@ -4,8 +4,7 @@ function setupOpenModeButton() {
     const openModeBtn = document.getElementById("openModeBtn");
     openModeBtn.addEventListener("click", () => {
         openInNewPage = !openInNewPage;
-        openModeBtn.textContent = openInNewPage ? "新页面打开" : "当前页面打开";
-        openModeBtn.setAttribute("aria-pressed", String(openInNewPage));
+        openModeBtn.setAttribute("aria-checked", String(openInNewPage));
         openModeBtn.title = openInNewPage ? "点击切换为当前页面打开" : "点击切换为新页面打开";
     });
 }

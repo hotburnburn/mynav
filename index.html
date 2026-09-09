@@ -17,6 +17,13 @@
 #openModeBtn[aria-checked="true"]::before { transform: translateX(20px); }
 #openModeBtn:focus-visible { outline: 2px solid white; outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) { #openModeBtn, #openModeBtn::before { transition: none; } }
+.utility-button { position: fixed; right: 20px; z-index: 10; padding: 12px 16px; border: none; border-radius: 10px; background: #303030; box-shadow: 0 2px 8px #0004; font: 14px sans-serif; line-height: 20px; color: #eee; cursor: pointer; transition: background 0.2s; }
+.utility-button:hover { background: #3c3c3c; }
+.utility-button:active { background: #454545; }
+.utility-button:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+#unlockBtn { bottom: 136px; }
+#exportBtn { bottom: 84px; }
+@media (prefers-reduced-motion: reduce) { .utility-button { transition: none; } }
 </style>
 </head>
 
@@ -27,34 +34,10 @@
             aria-label="新页面打开" title="点击切换为新页面打开"></button>
         <span class="open-mode-new">新页面打开</span>
     </div>
-    <button id="unlockBtn" style="
-        position: fixed;
-        bottom: 130px;
-        right: 20px;
-        padding: 10px 20px;
-        background-color: #e6a23c;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      ">
+    <button id="unlockBtn" class="utility-button" type="button">
         加载私密链接 🔐
     </button>
-    <button id="exportBtn" style="
-        position: fixed;
-        bottom: 80px;
-        right: 20px;
-        padding: 10px 20px;
-        background-color: #67c23a;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      ">
+    <button id="exportBtn" class="utility-button" type="button">
         导出并清理记录
     </button>
     <script src="nav2.js"></script>

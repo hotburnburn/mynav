@@ -1,3 +1,15 @@
+let openInNewPage = false;
+
+function setupOpenModeButton() {
+    const openModeBtn = document.getElementById("openModeBtn");
+    openModeBtn.addEventListener("click", () => {
+        openInNewPage = !openInNewPage;
+        openModeBtn.textContent = openInNewPage ? "新页面打开" : "当前页面打开";
+        openModeBtn.setAttribute("aria-pressed", String(openInNewPage));
+        openModeBtn.title = openInNewPage ? "点击切换为当前页面打开" : "点击切换为新页面打开";
+    });
+}
+
 function CreateContainer() {
     const container = document.createElement("div");
     Object.assign(container.style, {
@@ -67,10 +79,13 @@ function createLinkButton({ text, url, color }) {
         transition: "background-color 0.3s, transform 0.2s",
     });
 
-    // 点击事件，打开新页面并记录
+    // 按当前选择的方式打开链接并记录
     button.addEventListener("click", () => {
-        // 打开新页面
-        window.open(url, "_self");
+        if (openInNewPage) {
+            window.open(url, "_blank", "noopener,noreferrer");
+        } else {
+            window.open(url, "_self");
+        }
 
         // 记录点击信息
         const timestamp = new Date().toISOString();
@@ -123,6 +138,7 @@ function renderData(data, container) {
 }
 
 async function initNav() {
+    setupOpenModeButton();
     document.body.style.background = "#242424";
     const container = CreateContainer();
     
